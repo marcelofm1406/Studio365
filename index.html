@@ -1,1 +1,73 @@
-
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>STUDIO 365 — Gestão do Plantel</title>
+<style>
+:root{--blue:#0b5ed7;--dark:#071525;--card:#10243a;--line:#29425d;--text:#eef5ff;--muted:#9fb2c7}
+*{box-sizing:border-box}body{margin:0;font-family:Arial,sans-serif;background:linear-gradient(135deg,#06111f,#0b2035);color:var(--text)}
+.app{max-width:1200px;margin:auto;padding:20px}.head{display:flex;justify-content:space-between;align-items:center;gap:15px;margin-bottom:16px}
+h1{margin:0;font-size:28px}.sub{color:var(--muted);font-size:14px;margin-top:4px}
+button{cursor:pointer;border:1px solid var(--line);background:#142d46;color:var(--text);padding:11px 14px;border-radius:10px;font-weight:700}
+button.primary,.active{background:var(--blue);border-color:var(--blue)}button.danger{background:#5b2028}
+.nav{display:flex;gap:7px;overflow:auto;margin-bottom:18px;padding-bottom:4px}.page{display:none}.page.show{display:block}
+.grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}.card{background:rgba(16,36,58,.96);border:1px solid var(--line);border-radius:16px;padding:16px;margin-bottom:14px}.stat b{display:block;font-size:28px;margin-top:5px}.muted{color:var(--muted)}
+.forms{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}.full{grid-column:1/-1}
+label{font-size:13px;font-weight:bold;display:block;margin-bottom:5px}input,select,textarea{width:100%;background:#0a1b2c;color:var(--text);border:1px solid var(--line);border-radius:9px;padding:11px;font-size:16px}
+.row{border:1px solid var(--line);border-radius:11px;padding:12px;margin:8px 0;display:flex;justify-content:space-between;gap:12px}.actions{display:flex;gap:8px;flex-wrap:wrap}
+@media(max-width:700px){.grid{grid-template-columns:repeat(2,1fr)}.forms{grid-template-columns:1fr}.app{padding:12px}.head{align-items:flex-start}}
+</style>
+</head>
+<body>
+<div class="app">
+<header class="head"><div><h1>STUDIO 365</h1><div class="sub">Gestão do plantel • criação • reprodução • saúde • apresentações</div></div><button class="primary" onclick="openPage('plantel');showForm()">+ Nova ave</button></header>
+<nav class="nav">
+<button class="active" data-p="inicio">🏠 Início</button><button data-p="plantel">🐔 Plantel</button><button data-p="repro">🧬 Reprodução</button><button data-p="saude">💉 Saúde</button><button data-p="postura">🥚 Postura</button><button data-p="peso">⚖️ Pesagens</button><button data-p="apresent">🏆 Apresentações</button><button data-p="backup">💾 Dados</button>
+</nav>
+<section id="inicio" class="page show">
+<div class="grid"><div class="card stat"><span class="muted">Aves</span><b id="stTotal">0</b></div><div class="card stat"><span class="muted">Galinhas</span><b id="stF">0</b></div><div class="card stat"><span class="muted">Galos</span><b id="stM">0</b></div><div class="card stat"><span class="muted">Apresentações</span><b id="stShow">0</b></div></div>
+<div class="card"><h2>Bem-vindo ao STUDIO 365</h2><p class="muted">Cadastre cada ave individualmente e acompanhe genealogia, saúde, postura, peso e histórico de apresentações em desfile.</p><div id="recent"></div></div>
+</section>
+<section id="plantel" class="page">
+<div class="card"><div class="actions"><input id="search" placeholder="Buscar nome, ID ou anilha" oninput="renderBirds()"><select id="sex" onchange="renderBirds()"><option value="">Todos</option><option>Fêmea</option><option>Macho</option></select><button class="primary" onclick="showForm()">+ Cadastrar</button></div></div>
+<div id="birdForm" class="card" style="display:none"><h2>Cadastro da ave</h2><form id="fBird" class="forms">
+<div><label>ID / código</label><input name="id" required></div><div><label>Nome</label><input name="name" required></div><div><label>Sexo</label><select name="sex"><option>Fêmea</option><option>Macho</option></select></div><div><label>Raça / linhagem</label><input name="breed"></div><div><label>Anilha</label><input name="ring"></div><div><label>Nascimento</label><input type="date" name="birth"></div><div><label>Pai</label><input name="father"></div><div><label>Mãe</label><input name="mother"></div><div class="full"><label>Observações</label><textarea name="notes"></textarea></div><div class="full actions"><button class="primary">Salvar</button><button type="button" onclick="hideForm()">Cancelar</button></div>
+</form></div><div id="birds"></div>
+</section>
+<section id="repro" class="page"><div class="card"><h2>🧬 Reprodução e genealogia</h2><form id="fRepro" class="forms"><div><label>Galo / pai</label><input name="father" required></div><div><label>Galinha / mãe</label><input name="mother" required></div><div><label>Data</label><input type="date" name="date"></div><div><label>Ovos incubados</label><input type="number" min="0" name="eggs"></div><div><label>Nascidos</label><input type="number" min="0" name="hatched"></div><div><label>Observações</label><input name="obs"></div><div class="full"><button class="primary">Registrar reprodução</button></div></form><div id="repros"></div></div></section>
+<section id="saude" class="page"><div class="card"><h2>💉 Saúde</h2><form id="fHealth" class="forms"><div><label>Ave / ID</label><input name="bird" required></div><div><label>Data</label><input type="date" name="date"></div><div><label>Tipo</label><select name="type"><option>Vacinação</option><option>Vermifugação</option><option>Tratamento</option><option>Observação</option></select></div><div><label>Produto / procedimento</label><input name="product"></div><div><label>Dose / orientação</label><input name="dose"></div><div><label>Observação</label><input name="obs"></div><div class="full"><button class="primary">Registrar</button></div></form><div id="health"></div></div></section>
+<section id="postura" class="page"><div class="card"><h2>🥚 Postura</h2><form id="fEgg" class="forms"><div><label>Galinha / grupo</label><input name="bird" required></div><div><label>Data</label><input type="date" name="date"></div><div><label>Ovos</label><input type="number" min="0" name="qty"></div><div><label>Quebrados</label><input type="number" min="0" name="broken"></div><div><label>Para incubação</label><input type="number" min="0" name="fertile"></div><div><label>Observação</label><input name="obs"></div><div class="full"><button class="primary">Registrar postura</button></div></form><div id="eggs"></div></div></section>
+<section id="peso" class="page"><div class="card"><h2>⚖️ Pesagens</h2><form id="fWeight" class="forms"><div><label>Ave / ID</label><input name="bird" required></div><div><label>Data</label><input type="date" name="date"></div><div><label>Peso (kg)</label><input type="number" min="0" step=".01" name="weight" required></div><div><label>Observação</label><input name="obs"></div><div class="full"><button class="primary">Registrar pesagem</button></div></form><div id="weights"></div></div></section>
+<section id="apresent" class="page"><div class="card"><h2>🏆 Apresentações em desfile</h2><p class="muted">Módulo exclusivo para apresentações: estrutura, postura, plumagem, apresentação geral e tempo.</p><form id="fShow" class="forms"><div><label>Galo / ID</label><input name="bird" required></div><div><label>Evento</label><input name="event"></div><div><label>Data</label><input type="date" name="date"></div><div><label>Estrutura (0–10)</label><input type="number" min="0" max="10" name="structure"></div><div><label>Postura (0–10)</label><input type="number" min="0" max="10" name="posture"></div><div><label>Plumagem (0–10)</label><input type="number" min="0" max="10" name="plumage"></div><div><label>Apresentação (0–10)</label><input type="number" min="0" max="10" name="presentation"></div><div><label>Tempo de desfile</label><input name="time" placeholder="Ex.: 01:35"></div><div class="full"><label>Observações</label><textarea name="obs"></textarea></div><div class="full"><button class="primary">Registrar apresentação</button></div></form><div id="shows"></div></div></section>
+<section id="backup" class="page"><div class="card"><h2>💾 Dados do STUDIO 365</h2><p class="muted">Os dados ficam salvos neste computador/navegador. Faça backup regularmente.</p><div class="actions"><button class="primary" onclick="exportData()">⬇ Exportar backup</button><button onclick="document.getElementById('file').click()">⬆ Importar backup</button><input id="file" type="file" accept=".json" style="display:none" onchange="importData(event)"></div><p id="dataMsg" class="muted"></p></div></section>
+</div>
+<script>
+const KEY='studio365_data_v1';
+let D=JSON.parse(localStorage.getItem(KEY)||'{"birds":[],"repro":[],"health":[],"eggs":[],"weights":[],"shows":[]}');
+const $=s=>document.querySelector(s), $$=s=>document.querySelectorAll(s);
+const save=()=>localStorage.setItem(KEY,JSON.stringify(D));
+const date=()=>new Date().toISOString().slice(0,10);
+function openPage(id){$$('.page').forEach(x=>x.classList.toggle('show',x.id===id));$$('.nav button').forEach(x=>x.classList.toggle('active',x.dataset.p===id));renderAll()}
+$$('.nav button').forEach(b=>b.onclick=()=>openPage(b.dataset.p));
+function showForm(){$('#birdForm').style.display='block'} function hideForm(){$('#birdForm').style.display='none'}
+function formObj(form){return Object.fromEntries(new FormData(form))}
+$('#fBird').onsubmit=e=>{e.preventDefault();let x=formObj(e.target);if(D.birds.some(b=>b.id===x.id))return alert('ID já cadastrado.');D.birds.push(x);save();e.target.reset();hideForm();renderAll();alert('Ave cadastrada.')}
+function add(form,key){form.onsubmit=e=>{e.preventDefault();let x=formObj(e.target);if(!x.date)x.date=date();D[key].push(x);save();e.target.reset();renderAll();alert('Registro salvo.')}}
+add($('#fRepro'),'repro');add($('#fHealth'),'health');add($('#fEgg'),'eggs');add($('#fWeight'),'weights');add($('#fShow'),'shows');
+function esc(v){return String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[c]))}
+function list(id,a,fn){$(id).innerHTML=a.slice().reverse().map(fn).join('')||'<p class="muted">Nenhum registro ainda.</p>'}
+function renderBirds(){let t=$('#search').value.toLowerCase(),s=$('#sex').value;let a=D.birds.filter(x=>(!s||x.sex===s)&&((x.id+x.name+x.ring).toLowerCase().includes(t)));list('#birds',a,x=>`<div class="row"><div><b>${esc(x.id)} • ${esc(x.name)}</b><div class="muted">${esc(x.sex)} • ${esc(x.breed)} • Anilha: ${esc(x.ring)||'-'}</div><div class="muted">Pai: ${esc(x.father)||'-'} • Mãe: ${esc(x.mother)||'-'}</div></div><button class="danger" onclick="delBird('${esc(x.id)}')">Excluir</button></div>`)}
+function delBird(id){if(confirm('Excluir esta ave?')){D.birds=D.birds.filter(x=>x.id!==id);save();renderAll()}}
+function renderAll(){ $('#stTotal').textContent=D.birds.length;$('#stF').textContent=D.birds.filter(x=>x.sex==='Fêmea').length;$('#stM').textContent=D.birds.filter(x=>x.sex==='Macho').length;$('#stShow').textContent=D.shows.length;renderBirds();
+list('#recent',D.birds.slice(-5),x=>`<div class="row"><b>${esc(x.id)} • ${esc(x.name)}</b><span class="muted">${esc(x.sex)} • ${esc(x.breed)}</span></div>`);
+list('#repros',D.repro,x=>`<div class="row"><b>${esc(x.father)} × ${esc(x.mother)}</b><span class="muted">${esc(x.date)} • ${x.eggs||0} ovos • ${x.hatched||0} nascidos</span></div>`);
+list('#health',D.health,x=>`<div class="row"><b>${esc(x.bird)} • ${esc(x.type)}</b><span class="muted">${esc(x.date)} • ${esc(x.product)} • ${esc(x.dose)}</span></div>`);
+list('#eggs',D.eggs,x=>`<div class="row"><b>${esc(x.bird)} • ${x.qty||0} ovos</b><span class="muted">${esc(x.date)} • Incubação: ${x.fertile||0}</span></div>`);
+list('#weights',D.weights,x=>`<div class="row"><b>${esc(x.bird)} • ${x.weight||0} kg</b><span class="muted">${esc(x.date)}</span></div>`);
+list('#shows',D.shows,x=>`<div class="row"><div><b>${esc(x.bird)} • ${esc(x.event)}</b><div class="muted">${esc(x.date)} • Estrutura ${x.structure||0}/10 • Postura ${x.posture||0}/10 • Plumagem ${x.plumage||0}/10 • Apresentação ${x.presentation||0}/10 • Tempo ${esc(x.time)}</div></div></div>`)}
+function exportData(){let a=document.createElement('a');a.href=URL.createObjectURL(new Blob([JSON.stringify(D,null,2)],{type:'application/json'}));a.download='studio365-backup.json';a.click();URL.revokeObjectURL(a.href)}
+function importData(e){let f=e.target.files[0];if(!f)return;let r=new FileReader();r.onload=()=>{try{let x=JSON.parse(r.result);if(!x.birds)throw 0;D=x;save();renderAll();$('#dataMsg').textContent='Backup importado com sucesso.'}catch{$('#dataMsg').textContent='Arquivo inválido.'}};r.readAsText(f)}
+renderAll();
+</script>
+</body></html>

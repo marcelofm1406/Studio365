@@ -1,0 +1,7 @@
+STUDIO 365 - versão para celular (PWA)
+
+Esta versão transforma o sistema em um aplicativo instalável pelo navegador.
+
+IMPORTANTE: para aparecer como aplicativo instalado no Android, os arquivos precisam estar hospedados em um endereço HTTPS. Depois de abrir o endereço no Chrome, use o menu ⋮ > Adicionar à tela inicial / Instalar aplicativo.
+
+Os dados continuam sendo salvos no armazenamento local do navegador. Use o recurso de Backup dentro do sistema para exportar seus dados regularmente.
